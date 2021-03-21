@@ -1,0 +1,124 @@
+<mat-toolbar>
+  <button mat-icon-button (click)="sideNav.toggle()">
+    <mat-icon class="mat-18">menu</mat-icon>
+  </button>
+  <button mat-button>My Room</button>
+  <span class="spacer"></span>
+  <button *ngIf="!(user$ | async)"
+          (click)="login()"
+          mat-raised-button color="primary">
+    login
+  </button>
+  <button *ngIf="user$ | async as user" (click)="logout(user.uid)" mat-raised-button >
+    logout
+  </button>
+</mat-toolbar>
+
+<mat-sidenav-container>
+  <mat-sidenav #sideNav mode="side" class="side">
+    <div class="item-grid">
+      <mat-card *ngFor="let item of items; index as i" (click)="putItem(i+1)">
+        <img src="assets/images/items/furniture-{{(i+1) | number: '2.0'}}.png">
+      </mat-card>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="room" [class.dark]="!(lightStatus$ | async)">
+      <div class="room__light" (click)="toggleLight()">
+        <img src="assets/images/light.png" alt="">
+      </div>
+
+<!--      <button *ngIf="muteStatus===false" mat-icon-button class="room__volume" (click)="changeMute()">-->
+<!--        <mat-icon>volume_off</mat-icon>-->
+<!--      </button>-->
+
+<!--      <button *ngIf="muteStatus === true" mat-icon-button class="room__volume" (click)="changeVolumeOn()">-->
+<!--        <mat-icon>volume_up</mat-icon>-->
+<!--      </button>-->
+
+      <div class="room__display" cdkDrag cdkDragBoundary=".room">
+        <youtube-player
+          width="100%"
+          height="100%"
+          [videoId]="id"
+          (ready)="savePlayer($event)"
+          [playerVars]="playerVars"
+        >
+        </youtube-player>
+      </div>
+
+      <div *ngFor="let item of roomItems; index as i">
+        <img
+          class="item item--{{item.size}}"
+          cdkDrag
+          cdkDragBoundary=".room"
+          [matMenuTriggerFor]="menu"
+          src="assets/images/items/furniture-{{(item.id) | number: '2.0'}}.png"
+        >
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="changeItemSize(i ,'lg')">large</button>
+          <button mat-menu-item (click)="changeItemSize(i, 'md')">medium</button>
+          <button mat-menu-item (click)="changeItemSize(i, 'sm')">small</button>
+        </mat-menu>
+      </div>
+
+      <div class="user"
+           *ngFor="let user of users$ | async"
+           [style.left]="user.leftPosition"
+           cdkDrag
+           cdkDragBoundary=".room"
+           cdkDragLockAxis="x"
+      >
+        <ul>
+          <li *ngFor="let message of messages[user.uid]" class="message">
+            {{message}}
+          </li>
+        </ul>
+        <img src="assets/images/chars/{{user.avaterId}}.png" alt="">
+      </div>
+
+      <div class="room__floor"></div>
+    </div>
+
+    <form
+      *ngIf="user$ | async as user"
+      [formGroup]="form"
+      (ngSubmit)="sendMessage(user.uid)"
+    >
+      <mat-form-field>
+        <mat-label>チャット</mat-label>
+        <input
+          type="text"
+          formControlName="body"
+          matInput
+          autofocus
+          autocomplete="off"
+          required
+        >
+      </mat-form-field>
+      <button mat-icon-button [disabled]="form.invalid">
+        <mat-icon>send</mat-icon>
+      </button>
+    </form>
+
+    <form [formGroup]="youtubeForm" (ngSubmit)="changeVideo()">
+      <mat-form-field>
+        <mat-label>YouTube URL</mat-label>
+        <input
+          type="url"
+          formControlName="url"
+          matInput
+          autofocus
+          autocomplete="off"
+          required
+        />
+      </mat-form-field>
+      <button mat-icon-button [disabled]="youtubeForm.invalid">
+        <mat-icon>send</mat-icon>
+      </button>
+    </form>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>
+

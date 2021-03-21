@@ -1,0 +1,105 @@
+.spacer{
+  flex: 1;
+}
+
+.room{
+  width: 1000px;
+  margin: 24px auto;
+  border: 1px solid rgba(black, 0.12);
+  height: 400px;
+  position: relative;
+  &:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    left: 0;
+    background: #000;
+    opacity: 0;
+    transition: 0.3s;
+    pointer-events: none;
+  }
+  &.dark:after {
+    opacity: 0.8;
+  }
+  &__light{
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50px;
+    transform: translateX(-50%);
+    z-index: 20;
+  }
+  &__floor{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 40px;
+    width: 100%;
+    background: #8eb2b5;
+  }
+  &__display {
+    position: absolute;
+    top: 40px;
+    left: 80px;
+    width: 300px;
+    height: 240px;
+    background: #000;
+    overflow: hidden;
+    padding: 16px;
+    youtube-player {
+      //pointer-events: none;
+    }
+  }
+  &__volume{
+    margin: 10px;
+    .mat-icon {
+      font-size: 50px;
+      color: #8eb2b5;
+    }
+  }
+
+
+}
+
+.user{
+  position:absolute;
+  bottom: 40px;
+  left: 0;
+  width: 50px;
+}
+
+.message {
+  white-space: nowrap;
+}
+
+.side {
+  width: 400px;
+}
+
+.item-grid {
+  display: grid;
+  gap: 16px;
+  margin: 16px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.item {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  //width: 100px;
+  &--sm {
+    width: 80px;
+  }
+  &--md {
+    width: 150px;
+  }
+  &--lg {
+    width: 300px;
+  }
+}
+
